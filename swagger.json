@@ -1,0 +1,200 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Players API",
+    "description": "API to manage soccer players",
+    "version": "1.0.0"
+  },
+  "host": "localhost:8080",
+  "basePath": "/",
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/players": {
+      "get": {
+        "summary": "Get all players",
+        "description": "Returns a list of all soccer players",
+        "responses": {
+          "200": {
+            "description": "A list of players",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Player"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new player",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "player",
+            "description": "Player to add",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PlayerInput"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Player created"
+          },
+          "400": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    },
+    "/players/{id}": {
+      "get": {
+        "summary": "Get player by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "required": true,
+            "description": "Player ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A player",
+            "schema": {
+              "$ref": "#/definitions/Player"
+            }
+          },
+          "404": {
+            "description": "Player not found"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a player",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "required": true,
+            "description": "Player ID"
+          },
+          {
+            "in": "body",
+            "name": "player",
+            "description": "Updated player info",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PlayerInput"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Player updated"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "404": {
+            "description": "Player not found"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a player",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "required": true,
+            "description": "Player ID"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Player deleted"
+          },
+          "404": {
+            "description": "Player not found"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Player": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string",
+          "description": "MongoDB ObjectId"
+        },
+        "name": {
+          "type": "string"
+        },
+        "position": {
+          "type": "string"
+        },
+        "team": {
+          "type": "string"
+        },
+        "age": {
+          "type": "integer"
+        },
+        "appearance": {
+          "type": "integer"
+        },
+        "goals": {
+          "type": "integer"
+        },
+        "assists": {
+          "type": "integer"
+        }
+      }
+    },
+    "PlayerInput": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "position": {
+          "type": "string"
+        },
+        "team": {
+          "type": "string"
+        },
+        "age": {
+          "type": "integer"
+        },
+        "appearance": {
+          "type": "integer"
+        },
+        "goals": {
+          "type": "integer"
+        },
+        "assists": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "name",
+        "position",
+        "team"
+      ]
+    }
+  }
+}
