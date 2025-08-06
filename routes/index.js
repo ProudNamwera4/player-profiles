@@ -5,7 +5,7 @@ router.use("/", require("./swagger"));
 router.use("/players", require("./players"));
 router.use("/clubs", require("./clubs"));
 
-router.get("/login", passport.authenticate("github"), (req, res) => {});
+router.get("/login", passport.authenticate("github"));
 
 router.get("/logout", function (req, res, next) {
   req.logout(function (err) {
