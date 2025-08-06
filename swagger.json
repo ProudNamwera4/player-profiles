@@ -16,9 +16,22 @@
   "produces": [
     "application/json"
   ],
+  "tags": [
+    {
+      "name": "Players",
+      "description": "Operations related to soccer players"
+    },
+    {
+      "name": "Clubs",
+      "description": "Operations related to soccer clubs"
+    }
+  ],
   "paths": {
     "/players": {
       "get": {
+        "tags": [
+          "Players"
+        ],
         "summary": "Get all players",
         "description": "Returns a list of all soccer players",
         "responses": {
@@ -34,6 +47,9 @@
         }
       },
       "post": {
+        "tags": [
+          "Players"
+        ],
         "summary": "Create a new player",
         "parameters": [
           {
@@ -58,6 +74,9 @@
     },
     "/players/{id}": {
       "get": {
+        "tags": [
+          "Players"
+        ],
         "summary": "Get player by ID",
         "parameters": [
           {
@@ -81,6 +100,9 @@
         }
       },
       "put": {
+        "tags": [
+          "Players"
+        ],
         "summary": "Update a player",
         "parameters": [
           {
@@ -113,6 +135,9 @@
         }
       },
       "delete": {
+        "tags": [
+          "Players"
+        ],
         "summary": "Delete a player",
         "parameters": [
           {
@@ -129,6 +154,137 @@
           },
           "404": {
             "description": "Player not found"
+          }
+        }
+      }
+    },
+    "/clubs": {
+      "get": {
+        "tags": [
+          "Clubs"
+        ],
+        "summary": "Get all clubs",
+        "description": "Returns a list of all clubs",
+        "responses": {
+          "200": {
+            "description": "A list of clubs",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Club"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Clubs"
+        ],
+        "summary": "Create a new club",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "club",
+            "description": "Club to add",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ClubInput"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Club created"
+          },
+          "400": {
+            "description": "Invalid input"
+          }
+        }
+      }
+    },
+    "/clubs/{id}": {
+      "get": {
+        "tags": [
+          "Clubs"
+        ],
+        "summary": "Get club by ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "required": true,
+            "description": "Club ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A club",
+            "schema": {
+              "$ref": "#/definitions/Club"
+            }
+          },
+          "404": {
+            "description": "Club not found"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Clubs"
+        ],
+        "summary": "Update a club",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "required": true,
+            "description": "Club ID"
+          },
+          {
+            "in": "body",
+            "name": "club",
+            "description": "Updated club info",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ClubInput"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Club updated"
+          },
+          "400": {
+            "description": "Invalid input"
+          },
+          "404": {
+            "description": "Club not found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Clubs"
+        ],
+        "summary": "Delete a club",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "required": true,
+            "description": "Club ID"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Club deleted"
+          },
+          "404": {
+            "description": "Club not found"
           }
         }
       }
@@ -194,6 +350,53 @@
         "name",
         "position",
         "team"
+      ]
+    },
+    "Club": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string",
+          "description": "MongoDB ObjectId"
+        },
+        "name": {
+          "type": "string"
+        },
+        "gamesPlayed": {
+          "type": "integer"
+        },
+        "wins": {
+          "type": "integer"
+        },
+        "draws": {
+          "type": "integer"
+        },
+        "losses": {
+          "type": "integer"
+        }
+      }
+    },
+    "ClubInput": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "gamesPlayed": {
+          "type": "integer"
+        },
+        "wins": {
+          "type": "integer"
+        },
+        "draws": {
+          "type": "integer"
+        },
+        "losses": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "name"
       ]
     }
   }

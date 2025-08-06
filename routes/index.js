@@ -3,6 +3,7 @@ const passport = require("passport");
 
 router.use("/", require("./swagger"));
 router.use("/players", require("./players"));
+router.use("/clubs", require("./clubs"));
 
 router.get("/login", passport.authenticate("github"), (req, res) => {});
 

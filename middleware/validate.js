@@ -23,6 +23,28 @@ const savePlayer = (req, res, next) => {
   });
 };
 
+const saveClub = (req, res, next) => {
+  const validationRule = {
+    name: "required|string",
+    gamesPlayed: "required|integer",
+    wins: "required|integer",
+    draws: "required|integer",
+    losses: "required|integer",
+  };
+  validator(req.body, validationRule, {}, (err, status) => {
+    if (!status) {
+      res.status(412).send({
+        success: false,
+        message: "Validation failed",
+        data: err,
+      });
+    } else {
+      next();
+    }
+  });
+};
+
 module.exports = {
   savePlayer,
+  saveClub,
 };
