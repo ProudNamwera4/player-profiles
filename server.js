@@ -1,4 +1,4 @@
-//server.js
+// server.js
 require("dotenv").config();
 const cors = require("cors");
 const express = require("express");
@@ -10,31 +10,40 @@ const GitHubStrategy = require("passport-github2").Strategy;
 const mongodb = require("./data/database");
 
 const app = express();
+
+app.set("trust proxy", 1); // Needed for Render and other proxies
+
 app.use(express.json());
 app.set("json spaces", 2);
-const port = process.env.PORT || 8080;
 
-app
-  .use(bodyParser.json())
-  .use(
-    session({
-      secret: "secret",
-      resave: false,
-      saveUninitialized: true,
-    })
-  )
-  .use(passport.initialize())
-  .use(passport.session())
+app.use(bodyParser.json());
 
-  .use((req, res, next) => {
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader(
-      "Access-Control-Allow-Methods",
-      "POST, GET, PUT, PATCH, DELETE"
-    );
-    next();
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "secret",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: process.env.NODE_ENV === "production", // send cookie over HTTPS only in prod
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // cross-site cookie for prod
+    },
   })
-  .use(cors({ methods: ["GET", "POST", "DELETE", "UPDATE", "PUT", "PATCH"] }));
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Proper CORS setup — adjust origin to your frontend domain
+app.use(
+  cors({
+    origin: process.env.FRONTEND_ORIGIN || "*", // set frontend URL here for production
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+  })
+);
+
+// Remove your manual Access-Control-Allow-Origin headers
+
 app.use("/", require("./routes/index.js"));
 
 process.on("uncaughtException", (err, origin) => {
@@ -60,38 +69,48 @@ passport.use(
 passport.serializeUser((user, done) => {
   done(null, user);
 });
+
 passport.deserializeUser((user, done) => {
   done(null, user);
 });
 
 app.get("/", (req, res) => {
-  res.send(
-    req.session.user !== undefined
-      ? `Logged in as ${req.session.user.username}`
-      : "Logged Out"
-  );
+  if (req.isAuthenticated()) {
+    res.send(
+      `Logged in as ${req.user.username || req.user.displayName || "User"}`
+    );
+  } else {
+    res.send("Logged Out");
+  }
 });
 
 app.get(
   "/github/callback",
   passport.authenticate("github", {
     failureRedirect: "/api-docs",
-    session: false,
   }),
   (req, res) => {
-    console.log("🔐 req.user in /github/callback:", req.user);
-    req.session.user = req.user;
+    // Passport sets req.user in session automatically
     res.redirect("/");
   }
 );
+
+// Optional: add a test route to check authentication status
+app.get("/check-auth", (req, res) => {
+  if (req.isAuthenticated()) {
+    res.json({ user: req.user });
+  } else {
+    res.status(401).send("Unauthorized");
+  }
+});
 
 // Start the server
 mongodb.initDb((err) => {
   if (err) {
     console.log(err);
   } else {
-    app.listen(port, () => {
-      console.log(`Server listening on port ${port}`);
+    app.listen(process.env.PORT || 8080, () => {
+      console.log(`Server listening on port ${process.env.PORT || 8080}`);
     });
   }
 });
