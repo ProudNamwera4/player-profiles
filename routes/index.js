@@ -1,10 +1,9 @@
 const router = require("express").Router();
 const passport = require("passport");
-const { isAuthenticated } = require("../middleware/authenticate");
 
 router.use("/", require("./swagger"));
-router.use("/players", isAuthenticated, require("./players"));
-router.use("/clubs", isAuthenticated, require("./clubs"));
+router.use("/players", require("./players"));
+router.use("/clubs", require("./clubs"));
 
 router.get("/login", passport.authenticate("github"));
 
