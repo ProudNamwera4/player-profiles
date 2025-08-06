@@ -8,8 +8,10 @@ const session = require("express-session");
 const GitHubStrategy = require("passport-github2").Strategy;
 
 const mongodb = require("./data/database");
+const routes = require("./routes");
 
 const app = express();
+const port = process.env.PORT || 8080;
 
 app.set("trust proxy", 1); // Needed for Render and other proxies
 

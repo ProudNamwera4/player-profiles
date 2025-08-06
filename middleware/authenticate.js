@@ -1,9 +1,9 @@
 //middleware/authenticate.js
 const isAuthenticated = (req, res, next) => {
-  if (req.session.user === undefined) {
-    return res.status(401).json("You do not have access!");
+  if (req.isAuthenticated && req.isAuthenticated()) {
+    return next(); // User authenticated, proceed
   }
-  next();
+  return res.status(401).json("You do not have access!"); // Otherwise block
 };
 
 module.exports = {
