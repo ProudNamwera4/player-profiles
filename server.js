@@ -36,7 +36,8 @@ app.use(passport.session());
 // Proper CORS setup — adjust origin to your frontend domain
 app.use(
   cors({
-    origin: process.env.FRONTEND_ORIGIN || "*", // set frontend URL here for production
+    origin:
+      process.env.FRONTEND_ORIGIN || "https://player-profiles.onrender.com", // set frontend URL here for production
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
   })
